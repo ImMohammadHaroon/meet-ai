@@ -1,0 +1,18 @@
+{
+  "default_branch": "main",
+  "branches": [
+    "Signin",
+    "main",
+    "origin"
+  ],
+  "parent": {
+    "Signin": "main",
+    "main": null,
+    "origin": "main"
+  },
+  "order": [
+    "main",
+    "Signin",
+    "origin"
+  ]
+}
