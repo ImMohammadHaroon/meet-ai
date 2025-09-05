@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 import { Button } from "@/components/ui/button"
 =======
@@ -42,9 +43,20 @@ export default function Home() {
     );
   }
 >>>>>>> Stashed changes
+=======
+"use client";
 
-function App() {
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+export default function Home() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+>>>>>>> 3208fd8f1c80888f5367086ac8216c448d5348a6
+
   return (
+<<<<<<< HEAD
 <<<<<<< Updated upstream
     <div className="flex min-h-svh flex-col items-center justify-center">
       <Button>Click me</Button>
@@ -54,26 +66,41 @@ function App() {
       <Input
         className="h-12 px-4 text-base border-gray-300 focus:border-black focus:ring-black"
         placeholder="Name"
+=======
+    <div>
+      <Input
+        placeholder="name"
+>>>>>>> 3208fd8f1c80888f5367086ac8216c448d5348a6
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
       <Input
+<<<<<<< HEAD
         className="h-12 px-4 text-base border-gray-300 focus:border-black focus:ring-black"
         placeholder="Email"
+=======
+        placeholder="email"
+>>>>>>> 3208fd8f1c80888f5367086ac8216c448d5348a6
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
       <Input
+<<<<<<< HEAD
         className="h-12 px-4 text-base border-gray-300 focus:border-black focus:ring-black"
         placeholder="Password"
+=======
+        placeholder="password"
+>>>>>>> 3208fd8f1c80888f5367086ac8216c448d5348a6
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
+<<<<<<< HEAD
       <Button onClick={onSubmit}>Create Account</Button>
 >>>>>>> Stashed changes
+=======
+      <Button>Create Account</Button>
+>>>>>>> 3208fd8f1c80888f5367086ac8216c448d5348a6
     </div>
-  )
+  );
 }
-
-export default App
