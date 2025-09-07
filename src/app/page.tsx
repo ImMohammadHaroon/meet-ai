@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
@@ -10,10 +10,12 @@ import Image from "next/image";
 export default function Home() {
   const { data: session } = authClient.useSession();
   const router = useRouter();
+  const [isSigningIn, setIsSigningIn] = useState(false);
+  const [isSigningUp, setIsSigningUp] = useState(false);
 
   useEffect(() => {
     if (session) {
-      router.push("/");
+      router.push("/main");
     }
   }, [session, router]);
 
@@ -103,10 +105,21 @@ export default function Home() {
               whileTap="tap"
             >
               <Button 
-                onClick={() => router.push("/sign-up")} 
-                className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg text-lg font-medium w-full sm:w-auto"
+                onClick={() => {
+                  setIsSigningUp(true);
+                  router.push("/sign-up");
+                }} 
+                className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg text-lg font-medium w-full sm:w-auto flex items-center justify-center gap-2"
+                disabled={isSigningUp}
               >
-                Get Started
+                {isSigningUp ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    <span>Loading...</span>
+                  </>
+                ) : (
+                  "Get Started"
+                )}
               </Button>
             </motion.div>
             
@@ -116,10 +129,21 @@ export default function Home() {
               whileTap="tap"
             >
               <Button 
-                onClick={() => router.push("/sign-in")} 
-                className="bg-white hover:bg-gray-100 text-green-600 border border-green-600 px-8 py-3 rounded-lg text-lg font-medium w-full sm:w-auto"
+                onClick={() => {
+                  setIsSigningIn(true);
+                  router.push("/sign-in");
+                }} 
+                className="bg-white hover:bg-gray-100 text-green-600 border border-green-600 px-8 py-3 rounded-lg text-lg font-medium w-full sm:w-auto flex items-center justify-center gap-2"
+                disabled={isSigningIn}
               >
-                Sign In
+                {isSigningIn ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-green-600"></div>
+                    <span>Loading...</span>
+                  </>
+                ) : (
+                  "Sign In"
+                )}
               </Button>
             </motion.div>
           </motion.div>

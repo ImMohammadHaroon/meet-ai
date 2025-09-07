@@ -1,3 +1,4 @@
+
 import React from "react";
 
 interface LayoutProps {
@@ -6,8 +7,8 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
     return ( 
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-200 py-10">
-            <div className="w-full max-w-[1000px] mx-auto p-6">
+        <div className="h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800 overflow-hidden">
+            <div className="w-full max-w-lg mx-auto p-4">
                 {children}
             </div>
         </div>
