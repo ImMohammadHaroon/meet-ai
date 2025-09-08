@@ -27,6 +27,8 @@ const formSchema = z.object({
 export const SignInView = () => {
     const router = useRouter();
     const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -37,6 +39,7 @@ export const SignInView = () => {
 
     const onSubmit = (data: z.infer<typeof formSchema>) => {
         setError(null);
+        setLoading(true);
         authClient.signIn.email(
             {
                 email: data.email,
@@ -44,9 +47,11 @@ export const SignInView = () => {
             },
             {
                 onSuccess: () => {
+                    setLoading(false);
                     router.push("/");
                 },
                 onError: ({ error }) => {
+                    setLoading(false);
                     setError(error.message);
                 },
             }
@@ -93,12 +98,22 @@ export const SignInView = () => {
                                         <FormItem>
                                             <FormLabel className="font-medium text-white">Password</FormLabel>
                                             <FormControl>
-                                                <Input 
-                                                    type="password" 
-                                                    placeholder="*******" 
-                                                    className="rounded-lg border border-gray-600 p-3 text-base bg-gray-700 text-white transition-all duration-200 focus:border-green-500 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-green-500 placeholder-gray-400"
-                                                    {...field} 
-                                                />
+                                                <div className="relative">
+                                                    <Input
+                                                        type={showPassword ? "text" : "password"}
+                                                        placeholder="*******"
+                                                        className="rounded-lg border border-gray-600 p-3 text-base bg-gray-700 text-white transition-all duration-200 focus:border-green-500 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-green-500 placeholder-gray-400 pr-10"
+                                                        {...field}
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        tabIndex={-1}
+                                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-200"
+                                                        onClick={() => setShowPassword((v) => !v)}
+                                                    >
+                                                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                                    </button>
+                                                </div>
                                             </FormControl>
                                             <FormMessage className="text-red-500" />
                                         </FormItem>
@@ -114,8 +129,19 @@ export const SignInView = () => {
                             <Button 
                                 type="submit"
                                 className="bg-gradient-to-r from-green-500 to-green-700 text-white font-semibold rounded-lg py-3 text-lg shadow-lg shadow-green-500/30 border-none mt-8 w-full transition-all duration-200 hover:from-green-700 hover:to-green-500 hover:shadow-green-500/40"
+                                disabled={loading}
                             >
-                                Sign In
+                                {loading ? (
+                                    <span className="flex items-center justify-center">
+                                        <svg className="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                                        </svg>
+                                        Signing in...
+                                    </span>
+                                ) : (
+                                    "Sign In"
+                                )}
                             </Button>
                             <div className="my-5 mb-2 text-center">
                                 <span className="text-gray-300 text-base">or continue with</span>
@@ -123,6 +149,11 @@ export const SignInView = () => {
                                     <Button 
                                         variant="outline" 
                                         type="button"
+                                       onClick={() => {
+                                            authClient.signIn.social({
+                                                provider: "google",                                              
+                                            });
+                                        }}
                                         className="rounded-lg border border-gray-600 bg-gray-700 text-white font-medium transition-all duration-200 flex items-center justify-center gap-2 w-full hover:bg-gray-600 hover:border-gray-500"
                                     >
                                         <Image src="/google.svg" alt="Google" width={20} height={20} />
@@ -132,6 +163,11 @@ export const SignInView = () => {
                                         variant="outline" 
                                         type="button"
                                         className="rounded-lg border border-gray-600 bg-gray-700 text-white font-medium transition-all duration-200 flex items-center justify-center gap-2 w-full hover:bg-gray-600 hover:border-gray-500"
+                                        onClick={() => {
+                                            authClient.signIn.social({
+                                                provider: "github",                                              
+                                            });
+                                        }}
                                     >
                                         <Image src="/github.svg" alt="GitHub" width={20} height={20} />
                                         GitHub

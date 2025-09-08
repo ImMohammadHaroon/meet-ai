@@ -1,5 +1,5 @@
 "use client";
-import { email, z } from "zod";
+import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { use, useState } from "react";
@@ -18,35 +18,50 @@ import { Schema, set } from "zod/v3";
 import { tr } from "date-fns/locale";
 import { error } from "console";
 import Image from "next/image";
+import path from "path";
 
 const formSchema = z.object({
-    email: z.string().min(1, "Email is required").email("Invalid email address"),
+    name: z.string().min(1, "Name is required"),
+    email: z.string().email(),
     password: z.string().min(1, { message: "Password is required" }),
+    confirmPassword: z.string().min(1, { message: "Password is required" }),
+}).refine((data: any) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
 });
 
 export const SignUpView = () => {
     const router = useRouter();
     const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            name: "",
             email: "",
             password: "",
+            confirmPassword: "",
         },
     });
 
     const onSubmit = (data: z.infer<typeof formSchema>) => {
         setError(null);
-        authClient.signIn.email(
+        setLoading(true);
+        authClient.signUp.email(
             {
+                name: data.name,
                 email: data.email,
                 password: data.password,
             },
             {
                 onSuccess: () => {
+                    setLoading(false);
                     router.push("/");
                 },
                 onError: ({ error }) => {
+                    setLoading(false);
                     setError(error.message);
                 },
             }
@@ -61,13 +76,31 @@ export const SignUpView = () => {
                         <div>
                             <div>
                                 <h1 className="text-4xl font-bold mb-3 text-center text-white tracking-tight">
-                                    Welcome Back
+                                    Let&apos;s get you started
                                 </h1>
                                 <p className="text-gray-300 text-center mb-7 text-lg">
-                                    Sign in to your account
+                                    Create your account
                                 </p>
                             </div>
                             <div className="space-y-5">
+                                <FormField
+                                    control={form.control}
+                                    name="name"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="font-medium text-white">Name</FormLabel>
+                                            <FormControl>
+                                                <Input 
+                                                    type="text" 
+                                                    placeholder="Enter your name" 
+                                                    className="rounded-lg border border-gray-600 p-3 text-base bg-gray-700 text-white transition-all duration-200 focus:border-green-500 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-green-500 placeholder-gray-400"
+                                                    {...field} 
+                                                />
+                                            </FormControl>
+                                            <FormMessage className="text-red-500" />
+                                        </FormItem>
+                                    )}
+                                />
                                 <FormField
                                     control={form.control}
                                     name="email"
@@ -93,12 +126,50 @@ export const SignUpView = () => {
                                         <FormItem>
                                             <FormLabel className="font-medium text-white">Password</FormLabel>
                                             <FormControl>
-                                                <Input 
-                                                    type="password" 
-                                                    placeholder="*******" 
-                                                    className="rounded-lg border border-gray-600 p-3 text-base bg-gray-700 text-white transition-all duration-200 focus:border-green-500 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-green-500 placeholder-gray-400"
-                                                    {...field} 
-                                                />
+                                                <div className="relative">
+                                                    <Input
+                                                        type={showPassword ? "text" : "password"}
+                                                        placeholder="*******"
+                                                        className="rounded-lg border border-gray-600 p-3 text-base bg-gray-700 text-white transition-all duration-200 focus:border-green-500 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-green-500 placeholder-gray-400 pr-10"
+                                                        {...field}
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        tabIndex={-1}
+                                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-200"
+                                                        onClick={() => setShowPassword((v) => !v)}
+                                                    >
+                                                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                                    </button>
+                                                </div>
+                                            </FormControl>
+                                            <FormMessage className="text-red-500" />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="confirmPassword"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="font-medium text-white">Confirm Password</FormLabel>
+                                            <FormControl>
+                                                <div className="relative">
+                                                    <Input
+                                                        type={showConfirmPassword ? "text" : "password"}
+                                                        placeholder="Confirm your password"
+                                                        className="rounded-lg border border-gray-600 p-3 text-base bg-gray-700 text-white transition-all duration-200 focus:border-green-500 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-green-500 placeholder-gray-400 pr-10"
+                                                        {...field}
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        tabIndex={-1}
+                                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-200"
+                                                        onClick={() => setShowConfirmPassword((v) => !v)}
+                                                    >
+                                                        {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                                    </button>
+                                                </div>
                                             </FormControl>
                                             <FormMessage className="text-red-500" />
                                         </FormItem>
@@ -114,8 +185,19 @@ export const SignUpView = () => {
                             <Button 
                                 type="submit"
                                 className="bg-gradient-to-r from-green-500 to-green-700 text-white font-semibold rounded-lg py-3 text-lg shadow-lg shadow-green-500/30 border-none mt-8 w-full transition-all duration-200 hover:from-green-700 hover:to-green-500 hover:shadow-green-500/40"
+                                disabled={loading}
                             >
-                                Sign In
+                                {loading ? (
+                                    <span className="flex items-center justify-center">
+                                        <svg className="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                                        </svg>
+                                        Creating...
+                                    </span>
+                                ) : (
+                                    "Create Account"
+                                )}
                             </Button>
                             <div className="my-5 mb-2 text-center">
                                 <span className="text-gray-300 text-base">or continue with</span>
@@ -123,6 +205,11 @@ export const SignUpView = () => {
                                     <Button 
                                         variant="outline" 
                                         type="button"
+                                         onClick={() => {
+                                            authClient.signIn.social({
+                                                provider: "google",                                              
+                                            });
+                                        }}
                                         className="rounded-lg border border-gray-600 bg-gray-700 text-white font-medium transition-all duration-200 flex items-center justify-center gap-2 w-full hover:bg-gray-600 hover:border-gray-500"
                                     >
                                         <Image src="/google.svg" alt="Google" width={20} height={20} />
@@ -131,6 +218,11 @@ export const SignUpView = () => {
                                     <Button 
                                         variant="outline" 
                                         type="button"
+                                         onClick={() => {
+                                            authClient.signIn.social({
+                                                provider: "github",                                              
+                                            });
+                                        }}
                                         className="rounded-lg border border-gray-600 bg-gray-700 text-white font-medium transition-all duration-200 flex items-center justify-center gap-2 w-full hover:bg-gray-600 hover:border-gray-500"
                                     >
                                         <Image src="/github.svg" alt="GitHub" width={20} height={20} />
@@ -139,9 +231,9 @@ export const SignUpView = () => {
                                 </div>
                             </div>
                             <p className="text-center mt-6 text-gray-300">
-                                Don't have an account?{" "}
-                                <Link href="/sign-up" className="text-green-400 underline font-medium hover:text-green-300 transition-colors duration-200">
-                                    Sign Up
+                                Already have an account?{" "}
+                                <Link href="/sign-in" className="text-green-400 underline font-medium hover:text-green-300 transition-colors duration-200">
+                                    Sign In
                                 </Link>
                             </p>
                         </div>
