@@ -184,7 +184,7 @@ export const SignUpView = () => {
                             )}
                             <Button 
                                 type="submit"
-                                className="bg-gradient-to-r from-green-500 to-green-700 text-white font-semibold rounded-lg py-3 text-lg shadow-lg shadow-green-500/30 border-none mt-8 w-full transition-all duration-200 hover:from-green-700 hover:to-green-500 hover:shadow-green-500/40"
+                                 className="bg-[#00A300] text-white font-semibold rounded-lg py-3 text-lg shadow-lg shadow-green-500/30 border-none mt-8 w-full transition-all duration-200 hover:bg-[#008000] hover:shadow-green-500/40"
                                 disabled={loading}
                             >
                                 {loading ? (
