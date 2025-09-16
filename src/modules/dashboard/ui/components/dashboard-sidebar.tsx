@@ -16,9 +16,8 @@ import Image from "next/image";
 import { DashboardUserButton } from "./dashboard-user-button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { text } from "stream/consumers";
 import { usePathname } from "next/navigation";
-import path from "path";
+
 
 const firstSection = [
   {

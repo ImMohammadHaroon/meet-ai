@@ -1,53 +1,36 @@
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { createAvatar } from "@dicebear/core";
+import { botttsNeutral, initials } from "@dicebear/collection";
 
-interface SimpleAvatarProps {
+interface GeneratedAvatarProps {
   seed: string;
   className?: string;
-  size?: number;
+  variant: "botttsNeutral" | "initials";
 }
 
-// Simple hash function to generate consistent colors
-const hashCode = (str: string): number => {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash; // Convert to 32bit integer
-  }
-  return hash;
-};
-
-const getColorFromSeed = (seed: string): string => {
-  const colors = [
-    "bg-red-500", "bg-blue-500", "bg-green-500", "bg-yellow-500",
-    "bg-purple-500", "bg-pink-500", "bg-indigo-500", "bg-teal-500",
-    "bg-orange-500", "bg-cyan-500"
-  ];
-  
-  const hash = Math.abs(hashCode(seed));
-  return colors[hash % colors.length];
-};
-
-export const SimpleAvatar = ({
+export const GeneratedAvatar = ({
   seed,
   className,
-  size = 40
-}: SimpleAvatarProps) => {
-  const initials = seed
-    .split(' ')
-    .map(word => word.charAt(0))
-    .join('')
-    .toUpperCase()
-    .substring(0, 2);
-  
-  const bgColor = getColorFromSeed(seed);
-  
+  variant,
+}: GeneratedAvatarProps) => {
+  let avatar;
+  if (variant === "botttsNeutral") {
+    avatar = createAvatar(botttsNeutral, {
+      seed,
+    });
+  } else {
+    avatar = createAvatar(initials, {
+      seed,
+      fontWeight: 500,
+      fontSize: 42,
+    });
+  }
+
   return (
-    <Avatar className={cn(`h-${size/4} w-${size/4}`, className)}>
-      <AvatarFallback className={cn(bgColor, "text-white font-medium")}>
-        {initials}
-      </AvatarFallback>
+    <Avatar className={cn(className)}>
+      <AvatarImage src={avatar.toDataUri()} alt="Avatar" />
+      <AvatarFallback>{seed.charAt(0).toUpperCase()}</AvatarFallback>
     </Avatar>
   );
 };

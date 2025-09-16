@@ -2,23 +2,17 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { use, useState } from "react";
+import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
-import { FormInput, OctagonAlert } from "lucide-react";
+import {  OctagonAlert } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from "@/components/ui/form";
-import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
-import { on } from "events";
 import { Alert, AlertTitle } from "@/components/ui/alert";
-import { Schema, set } from "zod/v3";
-import { tr } from "date-fns/locale";
-import { error } from "console";
 import Image from "next/image";
-import path from "path";
 
 const formSchema = z.object({
     name: z.string().min(1, "Name is required"),
