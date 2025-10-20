@@ -13,13 +13,14 @@ import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import Image from "next/image";
+import type { FormEvent } from "react";
 
 const formSchema = z.object({
     name: z.string().min(1, "Name is required"),
     email: z.string().email(),
     password: z.string().min(1, { message: "Password is required" }),
     confirmPassword: z.string().min(1, { message: "Password is required" }),
-}).refine((data: any) => data.password === data.confirmPassword, {
+}).refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
 });
@@ -62,11 +63,16 @@ export const SignUpView = () => {
         );
     };
 
+    function handleSubmit(e: FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        form.handleSubmit(onSubmit)();
+    }
+
     return (
         <div className="max-w-md mx-auto mt-20 mb-20 p-0 bg-gradient-to-br from-gray-900 to-gray-700 rounded-3xl shadow-2xl border border-gray-600">
             <div className="bg-gray-800 rounded-3xl shadow-lg p-12 pt-14 pb-14">
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+                    <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
                             <div>
                                 <h1 className="text-4xl font-bold mb-3 text-center text-white tracking-tight">
