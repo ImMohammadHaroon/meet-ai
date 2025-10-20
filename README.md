@@ -31,6 +31,42 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This project is configured for Vercel's Node.js runtime for API routes and server actions.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Required environment variables
+
+Create a `.env` (or set in Vercel Project Settings → Environment Variables):
+
+```
+DATABASE_URL=postgres://...
+
+GITHUB_CLIENT_ID=...
+GITHUB_CLIENT_SECRET=...
+
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+```
+
+### Database
+
+- This project uses Drizzle ORM with Neon serverless Postgres via `neon-http` driver.
+- Ensure `DATABASE_URL` points to a Neon (or Postgres) connection string compatible with HTTP.
+- To apply schema on first run locally:
+
+```bash
+npm run db:push
+```
+
+On Vercel, apply migrations manually from your local machine or CI before first deploy.
+
+### Build & deploy
+
+1. Push your repository to GitHub/GitLab/Bitbucket.
+2. Import the project in Vercel.
+3. Set the environment variables above in Vercel (Preview and Production).
+4. Trigger a deployment. Build command defaults to `npm run build`. Start is `next start` for self-host; Vercel handles this automatically.
+
+Notes:
+- API routes explicitly export `runtime = "nodejs"` to avoid Edge default for incompatible libraries.
+- tRPC endpoint is available at `/api/trpc`.
+- Auth routes are mounted under `/api/(auth)` via Better Auth.
