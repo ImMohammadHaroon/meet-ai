@@ -11,7 +11,7 @@ import { Drawer, DrawerContent, DrawerDescription, DrawerFooter,DrawerHeader, Dr
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { GeneratedAvatar } from "@/components/generated-avator";
-import { ChevronDownIcon, CreditCardIcon, LogOutIcon } from "lucide-react";
+import { ChevronDownIcon, LogOut } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 
@@ -68,7 +68,7 @@ export const DashboardUserButton = () =>{
                         variant="outline"
                         onClick={onLogout}
                         >
-                            <LogOutIcon className="size-4 text-black"/>
+                            <LogOut className="size-4 text-black"/>
                             Logout
                         </Button>
 
@@ -128,7 +128,7 @@ return (
             <DropdownMenuItem onClick={onLogout}
              className="cursor-pointer flex items-center justify-between">
                 logout
-                <LogOutIcon className="size-4"/>
+                <LogOut className="size-4"/>
             </DropdownMenuItem>
         </DropdownMenuContent>
     </DropdownMenu>

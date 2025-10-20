@@ -16,14 +16,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
-import { on } from "events";
 import { Alert, AlertTitle } from "@/components/ui/alert";
-import { Schema, set } from "zod/v3";
-import { tr } from "date-fns/locale";
-import { error } from "console";
 import Image from "next/image";
 
 const formSchema = z.object({
@@ -220,8 +215,8 @@ export const SignInView = () => {
                   </Button>
                 </div>
               </div>
-              <p className="text-center mt-6 text-gray-300">
-                Don't have an account?{" "}
+              <p className="text-sm text-muted-foreground">
+                Don&apos;t have an account?{" "}
                 <Link
                   href="/sign-up"
                   className="text-green-400 underline font-medium hover:text-green-300 transition-colors duration-200"
